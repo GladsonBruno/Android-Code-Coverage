@@ -22,6 +22,16 @@ allprojects {
     }
 }
 
+debug {
+    testCoverageEnabled true
+}
+
+android {
+    jacoco {
+        version = '0.7.9'
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
