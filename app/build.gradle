@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.vanniktech.android.junit.jacoco'
 
 android {
     compileSdkVersion 28
@@ -14,12 +13,8 @@ android {
     }
     buildTypes {
         release {
-            testCoverageEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            testCoverageEnabled true
         }
     }
 }
