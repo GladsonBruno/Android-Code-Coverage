@@ -6,6 +6,15 @@ buildscript {
         jcenter()
         
     }
+    debug {
+        testCoverageEnabled true
+    }
+
+    android {
+        jacoco {
+            version = '0.7.9'
+        }
+    }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
         
@@ -19,16 +28,6 @@ allprojects {
         google()
         jcenter()
         
-    }
-}
-
-debug {
-    testCoverageEnabled true
-}
-
-android {
-    jacoco {
-        version = '0.7.9'
     }
 }
 
