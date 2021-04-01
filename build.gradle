@@ -27,7 +27,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task jacocoRootReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
 
     reports {
         xml.enabled = true
