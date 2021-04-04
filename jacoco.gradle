@@ -4,31 +4,42 @@ jacoco {
     toolVersion = "0.8.5"
 }
 
-def buildTypes = android.buildTypes.collect { type -> type.name }
+def configDir = "${project.rootDir}/config"
+def reportDir = "${project.buildDir}/reports"
 
-buildTypes.each {
-    buildTypeName ->
-        def sourceName, sourcePath
-        sourceName = sourcePath = "${buildTypeName}"
-        def testTaskName = "test${sourceName.capitalize()}UnitTest"
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
 
-        task "${testTaskName}Coverage" (type:JacocoReport, dependsOn: "$testTaskName") {
-            group = "Reporting"
-            description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
-            logger.info(description)
-            classDirectories = fileTree(
-                    dir: "${project.buildDir}/intermediates/javac/${sourcePath}/classes",
-                    excludes: ['**/R.class', '**/R$*.class', '**/*$ViewInjector*.*', '**/BuildConfig.*', '**/Manifest*.*'] )
-            def coverageSourceDirs = [
-                    "src/main/java",
-                    "src/$buildTypeName/java"
-            ]
-            additionalSourceDirs = files(coverageSourceDirs)
-            sourceDirectories = files(coverageSourceDirs)
-            executionData = files("${project.buildDir}/jacoco/${testTaskName}.exec")
-            reports {
-                xml.enabled = true
-                html.enabled = true
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug/compileDebugJavaWithJavac/classes", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ])
+}
+task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = files("${buildDir}/jacoco/testDebugUnitTest.exec")
+
+    violationRules {
+        failOnViolation = true
+        rule {
+            limit {
+                minimum = 0.7
             }
         }
+    }
 }
