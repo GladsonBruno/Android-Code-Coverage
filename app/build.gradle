@@ -28,7 +28,7 @@ sonarqube {
     properties {
         // def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-26/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
     property "sonar.host.url", SONAR_URL
-    property "sonar.login", SONAR_LOGIN
+    property "sonar.login", SONAR_API_KEY
     property "sonar.organization", SONAR_ORGANIZATION
     property "sonar.projectKey", SONAR_PROJECT_KEY
     property "sonar.sources", "src/main/java"
